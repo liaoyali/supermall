@@ -3,7 +3,7 @@ import axios from 'axios'
 // config就是home.js传过来的url
 export function request(config) {
     const instance = axios.create({
-        baseURL: 'xxx',
+        baseURL: 'http://152.136.185.210:8000/api/n3',
         time: 5000
     })
 
