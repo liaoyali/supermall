@@ -44,6 +44,8 @@ import BackTop from 'components/content/backTop/BackTop'
 // 一些方法
 import {getHomeMultidata, getHomeGoods} from 'network/home';
 import {debounce} from 'common/utils';
+import {itemListenerMinxin} from 'common/mixin';
+
 
 export default {
     components: {
@@ -56,6 +58,7 @@ export default {
         Scroll,
         BackTop,
     },
+    mixins:[itemListenerMinxin],
     data() {
         return {
             banners: [],
@@ -69,7 +72,7 @@ export default {
             isShowBackUp: false,
             tabOffsetTop: 0,
             isTabFixed: false,
-            saveY: 0
+            saveY: 0,
         }
     },
     computed: {
@@ -82,7 +85,10 @@ export default {
         this.$refs.scroll.scrollTo(0, this.saveY, 0);
     },
     deactivated() {
-        this.saveY = this.$refs.scroll.getScrollY()
+        // 1. 保存 Y 值
+        this.saveY = this.$refs.scroll.getScrollY();
+        // 2. 取消全局事件的监听
+        this.$bus.$off('itemImageLoad', this.itemImgListener);
     },
     created() {
         // 1.请求多个数据
@@ -97,13 +103,15 @@ export default {
     mounted() {
         // 1. 图片加载完成后的时间监听
         // 对refresh进行防抖动
-        const refresh = debounce(this.$refs.scroll.refresh, 50);
+        // const refresh = debounce(this.$refs.scroll.refresh, 50);
 
-        // 3.监听item中图片加载完成
-        this.$bus.$on('itemImageLoad', () => {
-            // console.log('ss');
-           refresh();
-        });
+        // // 3.监听item中图片加载完成
+        // this.itemImgListener = () => {
+        //     // console.log('ss');
+        //    refresh();
+        // }
+        
+        // this.$bus.$on('itemImageLoad', this.itemImgListener);
 
         // 2. 获取tabControl的offsetTop
         // console.log(this.$refs.tabControl.offsetTop); 

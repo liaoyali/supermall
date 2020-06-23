@@ -8,6 +8,7 @@
             <DetailGoodsInfo :detailInfo="detailInfo" @imageLoad="imageLoad" />
             <DetailParamInfo :paramInfo="paramInfo" />
             <DetailCommentInfo :commentInfo="commentInfo" />
+            <Goodslist :goods="recommends"/>
         </Scroll>
     </div>
 </template>
@@ -22,8 +23,12 @@ import DetailParamInfo from './childComps/DetailParamInfo';
 import DetailCommentInfo from './childComps/DetailCommentInfo'
 
 import Scroll from '../../components/common/scroll/Scroll'
+import Goodslist from '../../components/content/goods/GoodsList'
 
-import { getDetail, Goods, Shop, GoodsParams } from 'network/detail';
+import { getDetail, Goods, Shop, GoodsParams, getRecommend } from 'network/detail';
+
+import {debounce} from 'common/utils';
+import {itemListenerMinxin} from 'common/mixin';
 
 
 export default {
@@ -36,9 +41,11 @@ export default {
             shop: {},
             detailInfo: {},
             paramInfo: {},
-            commentInfo: {}
+            commentInfo: {},
+            recommends: [],
         }
     },
+    mixins:[itemListenerMinxin],
     components: {
         DetailNavBar,
         DetailSwiper,
@@ -47,7 +54,8 @@ export default {
         Scroll,
         DetailGoodsInfo,
         DetailParamInfo,
-        DetailCommentInfo
+        DetailCommentInfo,
+        Goodslist
     },
     created() {
         // 1. 保存传入的iid
@@ -76,10 +84,27 @@ export default {
                 this.commentInfo = data.rate.list[0];
             }
         })
+
+        // 3. 请求推荐数据
+        getRecommend().then(res => {
+            // console.log(res);
+            this.recommends = res.data.list;
+        })
     },
+    mounted() {
+        // 由于此部分代码和Home中重复，所以写在了mixin里
+    },
+    // detail没有设置keep-alive保持缓存，所以不能在deactivated声明周期中取消
+    destroyed() {
+        this.$bus.$on('itemImageLoad', this.itemImgListener)
+    },
+
+
     methods: {
         imageLoad() {
+            // const refresh = debounce(this.$refs.scroll.refresh, 50);
             this.$refs.scroll.refresh();
+            // refresh();
         }
     }
 }
