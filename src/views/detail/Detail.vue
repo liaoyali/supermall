@@ -102,9 +102,9 @@ export default {
 
     methods: {
         imageLoad() {
-            // const refresh = debounce(this.$refs.scroll.refresh, 50);
             this.$refs.scroll.refresh();
-            // refresh();
+            // 混入mixin防抖
+            // this.refresh();
         }
     }
 }
