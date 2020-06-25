@@ -1,14 +1,14 @@
 <template>
     <div id="detail">
-        <DetailNavBar class="detail-nav" />
+        <DetailNavBar class="detail-nav" @titleClick="titleClick" />
         <Scroll class="content" ref="scroll">
             <DetailSwiper :topImages="topImages" />
             <DetailBaseInfo :goods="goods" />
             <DetailShopInfo :shop="shop" />
             <DetailGoodsInfo :detailInfo="detailInfo" @imageLoad="imageLoad" />
-            <DetailParamInfo :paramInfo="paramInfo" />
-            <DetailCommentInfo :commentInfo="commentInfo" />
-            <Goodslist :goods="recommends"/>
+            <DetailParamInfo :paramInfo="paramInfo" ref="params" />
+            <DetailCommentInfo :commentInfo="commentInfo" ref="comment" />
+            <Goodslist :goods="recommends" ref="recommend" />
         </Scroll>
     </div>
 </template>
@@ -43,6 +43,8 @@ export default {
             paramInfo: {},
             commentInfo: {},
             recommends: [],
+            themeTopYs: [],
+            getThemeTopY: null
         }
     },
     mixins:[itemListenerMinxin],
@@ -63,7 +65,7 @@ export default {
         // 2.根据iid请求详情数据
         getDetail(this.iid).then(res => {
             // 1.顶部轮播数据
-            console.log(res);
+            // console.log(res);
             const data = res.result;
             this.topImages = data.itemInfo.topImages;
 
@@ -83,6 +85,20 @@ export default {
             if(data.rate.cRate != 0) {
                 this.commentInfo = data.rate.list[0];
             }
+
+            // $nextTick等到渲染完后拿值
+            // this.$nextTick(() => {
+            //     // 根据最新的数据，对应的dom是已经被渲染出来了
+            //     // 但是图片依然是没有加载完 (目前获得的这些offsetTop是不包含图片的)
+            //     // offsetTop值不对，一般都是图片的问题
+            //     this.themeTopYs.push(0);
+            //      this.themeTopYs.push(this.$refs.params.$el.offsetTop);
+            //      this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
+            //      this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
+            //      console.log(this.themeTopYs);
+            // })
+
+
         })
 
         // 3. 请求推荐数据
@@ -90,10 +106,21 @@ export default {
             // console.log(res);
             this.recommends = res.data.list;
         })
+
+        // 4. 给getThemeTopY赋值
+        this.getThemeTopY = debounce(() => {
+            this.themeTopYs = []
+            this.themeTopYs.push(0);
+            this.themeTopYs.push(this.$refs.params.$el.offsetTop - 44);
+            this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
+            this.themeTopYs.push(this.$refs.recommend.$el.offsetTop- 44);
+            console.log(this.themeTopYs);
+        },100)
     },
     mounted() {
         // 由于此部分代码和Home中重复，所以写在了mixin里
     },
+
     // detail没有设置keep-alive保持缓存，所以不能在deactivated声明周期中取消
     destroyed() {
         this.$bus.$on('itemImageLoad', this.itemImgListener)
@@ -103,8 +130,16 @@ export default {
     methods: {
         imageLoad() {
             this.$refs.scroll.refresh();
+
+            this.getThemeTopY();
+            // console.log('---');
+            
             // 混入mixin防抖
             // this.refresh();
+        },
+        titleClick(i) {
+            console.log(i);
+            this.$refs.scroll.scrollTo(0, -this.themeTopYs[i], 200);
         }
     }
 }
