@@ -15,7 +15,7 @@
                 >
             <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad" />
             <home-recommend-view :recommends="recommends"/>
-            <HomeFeatureView/>
+            <HomeFeatureView />
             <tab-control :titles="['流行','新款','精选']"
                     @tabClick="tabClick" 
                     ref="tabControl2" />
@@ -156,7 +156,9 @@ export default {
         swiperImageLoad() {
         // console.log(this.$refs.tabControl.$el.offsetTop);
         this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
+        // console.log(this.tabOffsetTop);
         },
+
         /**
          * 网络请求相关的方法
          */

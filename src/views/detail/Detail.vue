@@ -1,7 +1,10 @@
 <template>
     <div id="detail">
-        <DetailNavBar class="detail-nav" @titleClick="titleClick" />
-        <Scroll class="content" ref="scroll">
+        <DetailNavBar class="detail-nav" @titleClick="titleClick" ref="nav" />
+        <Scroll class="content" 
+                ref="scroll" 
+                :probeType="3" 
+                @scroll="contentScroll" >
             <DetailSwiper :topImages="topImages" />
             <DetailBaseInfo :goods="goods" />
             <DetailShopInfo :shop="shop" />
@@ -44,7 +47,8 @@ export default {
             commentInfo: {},
             recommends: [],
             themeTopYs: [],
-            getThemeTopY: null
+            getThemeTopY: null,
+            currentIndex: null
         }
     },
     mixins:[itemListenerMinxin],
@@ -114,7 +118,8 @@ export default {
             this.themeTopYs.push(this.$refs.params.$el.offsetTop - 44);
             this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
             this.themeTopYs.push(this.$refs.recommend.$el.offsetTop- 44);
-            console.log(this.themeTopYs);
+            this.themeTopYs.push(Number.MAX_VALUE)
+            // console.log(this.themeTopYs);
         },100)
     },
     mounted() {
@@ -140,6 +145,29 @@ export default {
         titleClick(i) {
             console.log(i);
             this.$refs.scroll.scrollTo(0, -this.themeTopYs[i], 200);
+        },
+        contentScroll(position) {
+            // 1. 获取y值
+            const positionY = -position.y;
+            // 2. positionY和主题中值进行对比
+            // [0, 3214, 4102, 4347]
+            // postionY 在 0 和 3214 之间，index = 0
+            // postionY 在 3214 和 4102 之间，index = 1
+            // postionY 在 4102 和 4347 之间，index = 2
+            // postionY 超过 4347，index = 3
+            // for(let i in this.themeTopYs) {
+            //     console.log(i);
+            //     // 注意这里得到的i是个字符串
+            // }
+            let length = this.themeTopYs.length;
+            for(let i = 0; i < length - 1; i++) {
+                // if(this.currentIndex != i && ((i < length - 1 && positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]) || (i === length - 1 && positionY >= this.themeTopYs[i])) ) {
+                if(this.currentIndex != i && (positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1])  ) {
+                    this.currentIndex = i;
+                    console.log(this.currentIndex);
+                    this.$refs.nav.currentIndex = this.currentIndex;                    
+                }
+            }
         }
     }
 }
