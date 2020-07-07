@@ -106,8 +106,12 @@
 </template>
 
 <script>
-import BScroll from 'better-scroll'
+import BScroll from 'better-scroll';
+import {itemListenerMinxin, backTopMixin} from 'common/mixin';
+
+
 export default {
+    mixins: [backTopMixin],
     data() {
         return {
             scroll: null
@@ -145,7 +149,7 @@ export default {
 
 <style scoped>
     .wrapper {
-        height: 150px;
+        height: 1500px;
         background-color: pink;
         overflow: hidden;
         /* overflow-y: scroll; */

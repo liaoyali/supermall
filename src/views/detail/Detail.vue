@@ -5,6 +5,9 @@
                 ref="scroll" 
                 :probeType="3" 
                 @scroll="contentScroll" >
+            <ul>
+                <li v-for="(item,i) in $store.state.cartList" :key="i">{{item}}</li>
+            </ul>
             <DetailSwiper :topImages="topImages" />
             <DetailBaseInfo :goods="goods" />
             <DetailShopInfo :shop="shop" />
@@ -13,6 +16,8 @@
             <DetailCommentInfo :commentInfo="commentInfo" ref="comment" />
             <Goodslist :goods="recommends" ref="recommend" />
         </Scroll>
+            <DetailBottonBar @addToCart="addToCart" />
+            <back-top @click.native="backClick" v-show="isShowBackUp"/>
     </div>
 </template>
 
@@ -24,14 +29,16 @@ import DetailShopInfo from './childComps/DetailShopInfo';
 import DetailGoodsInfo from './childComps/DetailGoodsInfo';
 import DetailParamInfo from './childComps/DetailParamInfo';
 import DetailCommentInfo from './childComps/DetailCommentInfo'
+import DetailBottonBar from './childComps/DetailBottonBar'
 
 import Scroll from '../../components/common/scroll/Scroll'
 import Goodslist from '../../components/content/goods/GoodsList'
 
+
 import { getDetail, Goods, Shop, GoodsParams, getRecommend } from 'network/detail';
 
 import {debounce} from 'common/utils';
-import {itemListenerMinxin} from 'common/mixin';
+import {itemListenerMinxin, backTopMixin} from 'common/mixin';
 
 
 export default {
@@ -48,10 +55,10 @@ export default {
             recommends: [],
             themeTopYs: [],
             getThemeTopY: null,
-            currentIndex: null
+            currentIndex: null,
         }
     },
-    mixins:[itemListenerMinxin],
+    mixins:[itemListenerMinxin, backTopMixin],
     components: {
         DetailNavBar,
         DetailSwiper,
@@ -61,7 +68,8 @@ export default {
         DetailGoodsInfo,
         DetailParamInfo,
         DetailCommentInfo,
-        Goodslist
+        DetailBottonBar,
+        Goodslist,
     },
     created() {
         // 1. 保存传入的iid
@@ -143,7 +151,7 @@ export default {
             // this.refresh();
         },
         titleClick(i) {
-            console.log(i);
+            // console.log(i);
             this.$refs.scroll.scrollTo(0, -this.themeTopYs[i], 200);
         },
         contentScroll(position) {
@@ -164,11 +172,26 @@ export default {
                 // if(this.currentIndex != i && ((i < length - 1 && positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]) || (i === length - 1 && positionY >= this.themeTopYs[i])) ) {
                 if(this.currentIndex != i && (positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1])  ) {
                     this.currentIndex = i;
-                    console.log(this.currentIndex);
+                    // console.log(this.currentIndex);
                     this.$refs.nav.currentIndex = this.currentIndex;                    
                 }
             }
-        }
+            // 3. 是否显示回到顶部
+           this.listenShowBackTop(position);
+
+        },
+         addToCart() {
+            //  1. 获取购物车需要展示的信息
+            const product = {};
+            product.image = this.topImages[0];
+            product.title = this.goods.title;
+            product.desc = this.goods.desc;
+            product.price = this.goods.newPrice;
+            product.iid = this.iid;
+            // 2. 将商品添加到购物车里
+            // this.$store.carList.push(product)
+            this.$store.dispatch('addCart', product)
+         }
     }
 }
 </script>
@@ -188,6 +211,6 @@ export default {
         margin-top: -1px;
     }
     .content {
-        height: calc(100% - 44px);
+        height: calc(100% - 44px - 49px);
     }
 </style>

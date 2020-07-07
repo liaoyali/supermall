@@ -1,4 +1,7 @@
 import { debounce } from 'common/utils';
+import BackTop from 'components/content/backTop/BackTop'
+import { BACKTOP_DISTANCE } from 'common/const';
+
 
 export const itemListenerMinxin = {
     data() {
@@ -16,5 +19,25 @@ export const itemListenerMinxin = {
         };
 
         this.$bus.$on('itemImageLoad', this.itemImgListener);
+    },
+}
+
+export const backTopMixin = {
+    components: {
+        BackTop
+    },
+    data() {
+        return {
+            isShowBackUp: false,
+
+        }
+    },
+    methods: {
+        backClick() {
+            this.$refs.scroll.scrollTo(0, 0);
+        },
+        listenShowBackTop(position) {
+            this.isShowBackUp = (-position.y) > BACKTOP_DISTANCE;
+        }
     },
 }
