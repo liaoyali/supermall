@@ -16,5 +16,9 @@ export default {
             // context.state.cartList.push(payload);
             context.commit(ADD_TO_CART, payload);
         }
-    }
+    },
+
+    // addCart({commit, state}, payload) {
+
+    // }
 }

@@ -5,9 +5,9 @@
                 ref="scroll" 
                 :probeType="3" 
                 @scroll="contentScroll" >
-            <ul>
+            <!-- <ul>
                 <li v-for="(item,i) in $store.state.cartList" :key="i">{{item}}</li>
-            </ul>
+            </ul> -->
             <DetailSwiper :topImages="topImages" />
             <DetailBaseInfo :goods="goods" />
             <DetailShopInfo :shop="shop" />
@@ -212,5 +212,6 @@ export default {
     }
     .content {
         height: calc(100% - 44px - 49px);
+        overflow: hidden;
     }
 </style>
