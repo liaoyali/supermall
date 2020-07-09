@@ -24,8 +24,8 @@ export default {
         width: 13px;
     }
     .check {
-        border-color: pink;
-        background-color: pink;
+        border-color: #f46;
+        background-color: #f46;
 
     }
 </style>

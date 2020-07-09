@@ -11,7 +11,7 @@
       <div class="item-title">{{itemInfo.title}}</div>
       <div class="item-desc">商品描述: {{itemInfo.desc}}</div>
       <div class="info-bottom">
-        <div class="item-price left">¥{{itemInfo.newPrice}}</div>
+        <div class="item-price left">¥ {{itemInfo.price}}</div>
         <div class="item-count right">x{{itemInfo.count}}</div>
       </div>
     </div>
@@ -35,7 +35,8 @@ export default {
     },
     methods: {
         checkClick() {
-            this.itemInfo.checked = !this.itemInfo.checked;
+            // this.itemInfo.checked = !this.itemInfo.checked;
+            this.$store.commit('isItemChecked', this.itemInfo)
         }
     }
 }
@@ -98,6 +99,6 @@ export default {
   }
 
   .info-bottom .item-price {
-    color: orangered;
+    color: #f46;
   }
 </style>

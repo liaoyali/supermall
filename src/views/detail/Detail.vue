@@ -83,7 +83,8 @@ export default {
 
             // 2.获取商品信息
             this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services);
-
+            // console.log(this.goods);
+            
             // 3. 创建店铺信息的对象
             this.shop = new Shop(data.shopInfo);
 
@@ -186,7 +187,9 @@ export default {
             product.image = this.topImages[0];
             product.title = this.goods.title;
             product.desc = this.goods.desc;
-            product.price = this.goods.newPrice;
+            product.price = this.goods.realPrice;
+            // console.log(product.price);
+            
             product.iid = this.iid;
             // 2. 将商品添加到购物车里
             // this.$store.carList.push(product)

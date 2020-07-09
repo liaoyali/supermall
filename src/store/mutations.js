@@ -12,5 +12,8 @@ export default {
     [ADD_TO_CART](state, payload) {
         payload.checked = false;
         state.cartList.push(payload);
+    },
+    isItemChecked(state, payload) {
+        payload.checked = !payload.checked;
     }
 }
