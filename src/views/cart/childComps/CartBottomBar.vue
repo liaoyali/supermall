@@ -12,7 +12,7 @@
             ￥{{totalPrice}}
         </div>
 
-        <div class="calculate">
+        <div class="calculate" @click="calcClick">
             结算
         </div>
     </div>
@@ -48,6 +48,11 @@ export default {
                 this.$store.state.cartList.forEach(item => item.checked = false)
             } else { // 部分或全部不选中
                 this.$store.state.cartList.forEach(item => item.checked = true)
+            }
+        },
+        calcClick() {
+            if(!this.isSelectAll) {
+                this.$toast.show('请选择要购买的商品', 2000)
             }
         }
     }
