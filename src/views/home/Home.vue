@@ -16,12 +16,12 @@
             <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad" />
             <home-recommend-view :recommends="recommends"/>
             <HomeFeatureView />
-            <tab-control :titles="['流行','新款','精选']"
+            <tab-control :titles="['流行', '新款', '精选']"
                     @tabClick="tabClick" 
                     ref="tabControl2" />
             <goods-list :goods="showGoods"></goods-list>
        </Scroll>
-       <!-- 法一：采用子组件$emit -->
+       <!-- 法一：采用子组件 $emit -->
         <!-- <back-top @backClick="backClick" /> -->
         <!-- 法二：组件里只有这一张图片，点击图片相当于点击组件，采用native来监听组件即可 -->
         <back-top @click.native="backClick" v-show="isShowBackUp"/>
@@ -83,7 +83,7 @@ export default {
         this.$refs.scroll.scrollTo(0, this.saveY, 0);
     },
     deactivated() {
-        // 1. 保存 Y 值
+        // 1. 保存 Y 值；
         this.saveY = this.$refs.scroll.getScrollY();
         // 2. 取消全局事件的监听
         this.$bus.$off('itemImageLoad', this.itemImgListener);
@@ -95,8 +95,6 @@ export default {
         this.getHomeGoods('pop');
         this.getHomeGoods('new');
         this.getHomeGoods('sell');
-
-       
     },
     mounted() {
         // 1. 图片加载完成后的时间监听
