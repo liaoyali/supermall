@@ -21,7 +21,7 @@
                     ref="tabControl2" />
             <goods-list :goods="showGoods"></goods-list>
        </Scroll>
-       <!-- 法一：采用子组件 $emit -->
+       <!-- 法一：采用子组件 $emit  -->
         <!-- <back-top @backClick="backClick" /> -->
         <!-- 法二：组件里只有这一张图片，点击图片相当于点击组件，采用native来监听组件即可 -->
         <back-top @click.native="backClick" v-show="isShowBackUp"/>
